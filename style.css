@@ -23,7 +23,10 @@ body {
     color: white;
 }
 
+.submit-word{
 
+    background-color: transparent;
+}
 
 input {
     outline: none;
@@ -35,13 +38,14 @@ input {
 }
 
 .app-container {
-    border-radius: 10px;
+    border-radius: 15px;
     width: 100%;
     max-width: 550px;
     max-height: 100%;
     background-color: #ffffff37;
     padding: 24px;
     overflow: auto;
+    display: flex;
 }
 
 .app-title {
@@ -65,15 +69,14 @@ input {
 .input-field {
     border-right: none;
     width: 100%;
-    padding: 0 4px;
+    padding: 10px;
     outline: none;
     border: none;
-    border-bottom: 1px solid #fff;
-    background-color: transparent;
+    background-color: #ffffff37;
     margin-right: 12px;
     color: #fff;
     box-shadow: none;
-    border-radius: 0;
+    border-radius: 15px;
     font-size: 20px;
 
     &:placeholder {
