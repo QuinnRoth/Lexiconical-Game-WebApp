@@ -1,10 +1,9 @@
-let arr = [];
 let txt = document.querySelector("#txt");
 let add = document.querySelector("#txt");
 let mainDiv = document.querySelector("#mainDiv");
 let count = 1;
 let api_key = "d864b1fc-dac3-4c9c-a253-6519b9249419";
-
+let attempts = 0;
 rules = setRules();
 
 let def = {};
@@ -39,41 +38,58 @@ function setRules() {
 }
 
 function checkRules(obj) {
-    let score = 0;
+    let score = 1;
     const rule1 = /ou/;
     if (rule1.test(obj.title)) {
         console.log("Rule 1 passed");
         score++;
+    }
+    else{
+        return score;
     }
     const rule2 = /i.*i/;
     if (rule2.test(obj.title)) {
         console.log("Rule 2 passed");
         score++;
     }
+    else{
+        return score;
+    }
     const rule3 = /^[aeiouy].*[aeiouy]$/;
     if (rule3.test(obj.title)) {
         console.log("Rule 3 passed");
         score++;
+    }
+    else{
+        return score;
     }
     const rule4 = /^.{11}$/;
     if (rule4.test(obj.title)) {
         console.log("Rule 4 passed");
         score++;
     }
+    else{
+        return score;
+    }
     const rule5 = /insouciance/;
     if (rule5.test(obj.title)) {
         console.log("Today's Word Found!");
         score++;
     }
+    else{
+        return score;
+    }
+    console.log("Score: " + score);
     return score;
 }
 
 add.addEventListener("keypress", async function(event) {
     if (event.key === "Enter") {
         event.preventDefault();
+        attempts++;
         let obj = {};
         let rulesObj = {};
-        let score = 0;
+        let score = 1;
         obj.title = txt.value;
         if (obj.title === "" || obj.title.trim() == "") {
             alert("Write Something");
@@ -103,19 +119,39 @@ add.addEventListener("keypress", async function(event) {
                 alert("An error occurred while fetching data.");
             }
 
-            for(let i = 1; i < score; i++) {
-                rulesObj.title = rules[i];
-                addUI(rulesObj);
+
+            if (score < 5) {
+                clearUI();
+                for(let i = 0; i < score; i++) {
+                    rulesObj.title = rules[i];
+                    addUI(rulesObj);
+                    console.log("ran " + i);
+                }
+            }
+            else {
+                for(let i = 0; i < 5; i++) {
+                    rulesObj.title = rules[i];
+                    addUI(rulesObj);
+                    console.log("ran " + i);
+                }
+                alert("Congratulations! You guessed the word! It took you " + attempts + " attempts.");
+                attempts = 0;
             }
         }
     }
 });
 
+function clearUI() {
+    let divs = document.querySelectorAll(".rule-item");
+    divs.forEach((div) => {
+        div.remove();
+    });
+}
+
 
 function addUI(obj) {
     let div = document.createElement("div");
     div.classList.add("rule-item");
-
     let span = document.createElement("span");
     
     span.innerHTML = obj.title;
@@ -123,5 +159,4 @@ function addUI(obj) {
     
     mainDiv.append(div);
     txt.value = "";
-    console.log(arr);
 }
