@@ -90,8 +90,8 @@ add.addEventListener("keypress", async function(event) {
         let obj = {};
         let rulesObj = {};
         let score = 1;
-        obj.title = txt.value;
-        if (obj.title === "" || obj.title.trim() == "") {
+        obj.title = txt.value.trim();
+        if (obj.title === "") {
             alert("Write Something");
         } else {
             let url = "https://www.dictionaryapi.com/api/v3/references/collegiate/json/" + obj.title + "?key=" + api_key;
