@@ -99,18 +99,26 @@ add.addEventListener("keypress", async function(event) {
                 var data = await apiCall(url);
                 
                 if (!data) {
-                    alert("Word not found in dictionary. data is null.");
+                    alert("Word not found in dictionary.");
+                    return;
+                }
+
+                if (!data[0].meta) {
+                    alert("Word not found in dictionary.");
                     return;
                 }
 
                 if (!data[0].meta.stems[0]) {
-                    alert("Word not found in dictionary. hwi.hw is null.");
+                    alert("Word not found in dictionary.");
                     return;
                 }
-                if (data[0].meta.stems[0].toLowerCase() != obj.title.toLowerCase()) {
-                    alert("Word not found in dictionary. hwi.hw does not match input.");
+                
+                // if obj.title.tolowercase() is not in data[0].meta.stems[] return
+                if (!data[0].meta.stems.includes(obj.title.toLowerCase())) {
+                    alert("Word not found in dictionary.");
                     return;
                 }
+                
 
                 score = checkRules(obj);
                 
@@ -120,7 +128,7 @@ add.addEventListener("keypress", async function(event) {
             }
 
 
-            if (score < 5) {
+            if (score <= 5) {
                 clearUI();
                 for(let i = 0; i < score; i++) {
                     rulesObj.title = rules[i];
@@ -129,6 +137,7 @@ add.addEventListener("keypress", async function(event) {
                 }
             }
             else {
+                clearUI();
                 for(let i = 0; i < 5; i++) {
                     rulesObj.title = rules[i];
                     addUI(rulesObj);
