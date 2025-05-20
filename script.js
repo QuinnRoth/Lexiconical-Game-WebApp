@@ -28,33 +28,49 @@ async function apiCall(url) {
 
 function setRules() {
     let rulesArr = [];
-    let rule1 = "Rule 1: Must Include the letter combination 'ou'.";
-    let rule2 = "Rule 2: Must include the letter 'i' twice.";
+    let rule1 = "Rule 1: Must be an adjective.";
+    let rule2 = "Rule 2: Must include the sound 'tee' or 'tē'.";
     let rule3 = "Rule 3: The beginning and end must both be vowels.";
-    let rule4 = "Rule 4: Must be 11 characters long.";
-    let rule5 = "Rule 5: Guess today's word!";
+    let rule4 = "Rule 4: Must be spelled in alphabetical order.";
+    let rule5 = "Definition: Marked by or full of knots;";
     rulesArr.push(rule1, rule2, rule3, rule4, rule5);
     return rulesArr;
 }
 
-function checkRules(obj) {
+function checkRules(obj, data) {
     let score = 1;
-    const rule1 = /ou/;
-    if (rule1.test(obj.title)) {
-        console.log("Rule 1 passed");
-        score++;
+    
+
+    const rule1 = /adjective/;
+    for(let i = 0; i < data.length; i++ ){
+        if (rule1.test(data[i].fl) && data[i].meta.stems.includes(obj.title.toLowerCase())) {
+            console.log("Rule 2 passed");
+            score++;
+            break;
+        }
+        
     }
-    else{
+    //if score did not go up return because word was not an adjective
+    if(score == 1){
         return score;
     }
-    const rule2 = /i.*i/;
-    if (rule2.test(obj.title)) {
-        console.log("Rule 2 passed");
-        score++;
+    
+    const rule2 = /tē/;
+
+    // loops through all pronunciation strings
+    // and checks if any of them match the sound we are looking for
+    for(let i = 0; i < (data[0].hwi.prs).length; i++) {
+        if (rule2.test(data[0].hwi.prs[i].mw)) {
+            console.log("Rule 1 passed");
+            score++;
+            break;
+        }
     }
-    else{
+    //if score did not go up (sound not matched) then rule not passe= return
+    if(score == 2){
         return score;
     }
+
     const rule3 = /^[aeiouy].*[aeiouy]$/;
     if (rule3.test(obj.title)) {
         console.log("Rule 3 passed");
@@ -63,7 +79,8 @@ function checkRules(obj) {
     else{
         return score;
     }
-    const rule4 = /^.{11}$/;
+
+    const rule4 = /^a*b*c*d*e*f*g*h*i*j*k*l*m*n*o*p*q*r*s*t*u*v*w*x*y*z*$/;
     if (rule4.test(obj.title)) {
         console.log("Rule 4 passed");
         score++;
@@ -71,7 +88,8 @@ function checkRules(obj) {
     else{
         return score;
     }
-    const rule5 = /insouciance/;
+
+    const rule5 = /knotty/;
     if (rule5.test(obj.title)) {
         console.log("Today's Word Found!");
         score++;
@@ -118,9 +136,8 @@ add.addEventListener("keypress", async function(event) {
                     alert("Word not found in dictionary.");
                     return;
                 }
-                
 
-                score = checkRules(obj);
+                score = checkRules(obj, data);
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
