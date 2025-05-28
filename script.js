@@ -28,11 +28,11 @@ async function apiCall(url) {
 
 function setRules() {
     let rulesArr = [];
-    let rule1 = "Rule 1: Must be an adjective.";
-    let rule2 = "Rule 2: Must include the sound 'tee' or 'tē'.";
-    let rule3 = "Rule 3: The beginning and end must both be vowels.";
-    let rule4 = "Rule 4: Must be spelled in alphabetical order.";
-    let rule5 = "Definition: Marked by or full of knots;";
+    let rule1 = "Rule 1: Must be a noun.";
+    let rule2 = "Rule 2: Must include exactly four unique letters.";
+    let rule3 = "Rule 3: Must have fewer vowels than consonants.";
+    let rule4 = "Rule 4: Must contain two double letters.";
+    let rule5 = "Rule 5: Must be spelled in alphabetical order.";
     rulesArr.push(rule1, rule2, rule3, rule4, rule5);
     return rulesArr;
 }
@@ -41,38 +41,32 @@ function checkRules(obj, data) {
     let score = 1;
     
 
-    const rule1 = /adjective/;
+    const rule1 = /noun/;
     for(let i = 0; i < data.length; i++ ){
-        if (rule1.test(data[i].fl) && data[i].meta.stems.includes(obj.title.toLowerCase())) {
-            console.log("Rule 2 passed");
+        if (rule1.test(data[i].fl) && data[i].meta.stems.includes(obj.title)) {
+            console.log("Rule 1 passed");
             score++;
             break;
         }
         
     }
-    //if score did not go up return because word was not an adjective
+    //if score did not go up return, because word was not a noun
     if(score == 1){
         return score;
     }
     
-    const rule2 = /tē/;
-
-    // loops through all pronunciation strings
-    // and checks if any of them match the sound we are looking for
-    for(let i = 0; i < (data[0].hwi.prs).length; i++) {
-        if (rule2.test(data[0].hwi.prs[i].mw)) {
-            console.log("Rule 1 passed");
-            score++;
-            break;
-        }
+    const rule2 = new Set(obj.title);
+    if (rule2.size === 4) {
+        console.log("Rule 2 passed");
+        score++;
     }
-    //if score did not go up (sound not matched) then rule not passe= return
-    if(score == 2){
+    else{
         return score;
     }
 
-    const rule3 = /^[aeiouy].*[aeiouy]$/;
-    if (rule3.test(obj.title)) {
+
+    const rule3 = new Set(obj.title.match(/[aeiou]/g));
+    if (rule3.size < (obj.title.length - rule3.size)) {
         console.log("Rule 3 passed");
         score++;
     }
@@ -80,7 +74,7 @@ function checkRules(obj, data) {
         return score;
     }
 
-    const rule4 = /^a*b*c*d*e*f*g*h*i*j*k*l*m*n*o*p*q*r*s*t*u*v*w*x*y*z*$/;
+    const rule4 = /.*(.)\1.*(.)\2.*/;
     if (rule4.test(obj.title)) {
         console.log("Rule 4 passed");
         score++;
@@ -89,7 +83,7 @@ function checkRules(obj, data) {
         return score;
     }
 
-    const rule5 = /knotty/;
+    const rule5 = /^a*b*c*d*e*f*g*h*i*j*k*l*m*n*o*p*q*r*s*t*u*v*w*x*y*z*$/;
     if (rule5.test(obj.title)) {
         console.log("Today's Word Found!");
         score++;
@@ -108,7 +102,7 @@ add.addEventListener("keypress", async function(event) {
         let obj = {};
         let rulesObj = {};
         let score = 1;
-        obj.title = txt.value.trim();
+        obj.title = txt.value.trim().toLowerCase();
         if (obj.title === "") {
             alert("Write Something");
         } else {
@@ -132,7 +126,7 @@ add.addEventListener("keypress", async function(event) {
                 }
                 
                 // if obj.title.tolowercase() is not in data[0].meta.stems[] return
-                if (!data[0].meta.stems.includes(obj.title.toLowerCase())) {
+                if (!data[0].meta.stems.includes(obj.title)) {
                     alert("Word not found in dictionary.");
                     return;
                 }

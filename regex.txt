@@ -1,0 +1,53 @@
+This file is a list of all regex used in previous lexiconicals.
+
+Includes 'ou' = /ou/
+Contains letter 'i' twice = /i.*i/
+Must start and end with vowel = /^[aeiouy].*[aeiouy]$/
+Must be 11 characters long = /^.{11}$/
+
+Must contain two double letters = /.*(.)\1.*(.)\2.*/;
+
+--- countains phonetic spelling 'tē'
+const rule2 = /tē/;
+    // loops through all pronunciation strings
+    // and checks if any of them match the sound we are looking for
+    for(let i = 0; i < (data[0].hwi.prs).length; i++) {
+        if (rule2.test(data[0].hwi.prs[i].mw)) {
+            console.log("Rule 2 passed");
+            score++;
+            break;
+        }
+    }
+---
+
+--- word is an adjective
+const rule1 = /adjective/;
+    for(let i = 0; i < data.length; i++ ){
+        if (rule1.test(data[i].fl) && data[i].meta.stems.includes(obj.title.toLowerCase())) {
+            console.log("Rule 1 passed");
+            score++;
+            break;
+        }
+        
+    }
+---
+
+--- word has exactly 4 unique characters
+ const rule2 = new Set(obj.title);
+    if (rule2.size === 4) {
+        console.log("Rule 2 passed");
+        score++;
+    }
+    else{
+        return score;
+    }
+
+--- word has more consonants than vowels
+    const rule3 = new Set(obj.title.match(/[aeiou]/g));
+    if (rule3.size < (obj.title.length - rule3.size)) {
+        console.log("Rule 3 passed");
+        score++;
+    }
+    else{
+        return score;
+    }
